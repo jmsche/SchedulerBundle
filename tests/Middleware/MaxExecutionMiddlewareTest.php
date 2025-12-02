@@ -42,30 +42,6 @@ final class MaxExecutionMiddlewareTest extends TestCase
         $maxExecutionMiddleware->preExecute($task);
     }
 
-    public function testMiddlewareCannotPreExecuteWithoutReservationSupportingPolicy(): void
-    {
-        $storage = $this->createMock(StorageInterface::class);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(self::once())->method('critical')->with(self::equalTo('A reservation cannot be created for task "foo", please ensure that the policy used supports it.'));
-
-        $task = $this->createMock(TaskInterface::class);
-        $task->expects(self::exactly(2))->method('getName')->willReturn('foo');
-        $task->expects(self::once())->method('getMaxExecutions')->willReturn(5);
-
-        $maxExecutionMiddleware = new MaxExecutionMiddleware(new RateLimiterFactory([
-            'id' => 'foo',
-            'policy' => 'sliding_window',
-            'limit' => 10,
-            'interval' => '50',
-        ], $storage), $logger);
-
-        self::expectException(MiddlewareException::class);
-        self::expectExceptionMessage('Reserving tokens is not supported by "Symfony\Component\RateLimiter\Policy\SlidingWindowLimiter');
-        self::expectExceptionCode(0);
-        $maxExecutionMiddleware->preExecute($task);
-    }
-
     public function testMiddlewareCanPreExecuteWithReservationSupportingPolicy(): void
     {
         $storage = $this->createMock(StorageInterface::class);

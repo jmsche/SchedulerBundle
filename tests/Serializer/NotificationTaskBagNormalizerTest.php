@@ -22,7 +22,7 @@ final class NotificationTaskBagNormalizerTest extends TestCase
     public function testNormalizerCanSupport(): void
     {
         $notification = $this->createMock(Notification::class);
-        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $objectNormalizer = new ObjectNormalizer();
 
         $notificationTaskBagNormalizer = new NotificationTaskBagNormalizer($objectNormalizer);
 

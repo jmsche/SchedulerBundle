@@ -83,7 +83,7 @@ final class ConnectionTest extends TestCase
 
         $redis = $this->createMock(Redis::class);
         $redis->expects(self::once())->method('auth')->willReturn(true);
-        $redis->expects(self::once())->method('select')->with(self::equalTo('test'))->willReturn(false);
+        $redis->expects(self::once())->method('select')->with(self::equalTo(123))->willReturn(false);
         $redis->expects(self::once())->method('getLastError')->willReturn('ERR Error selecting database: wrong database name');
 
         self::expectException(InvalidArgumentException::class);
@@ -94,14 +94,14 @@ final class ConnectionTest extends TestCase
             'timeout' => 30,
             'port' => 6379,
             'auth' => 'root',
-            'dbindex' => 'test',
+            'dbindex' => 123,
             'list' => '_symfony_scheduler_tasks',
         ], [
             'host' => 'string',
             'timeout' => 'int',
             'port' => 'int',
             'auth' => 'string',
-            'dbindex' => 'string',
+            'dbindex' => 'int',
             'list' => 'string',
         ]), $serializer, $redis);
     }
@@ -807,7 +807,7 @@ final class ConnectionTest extends TestCase
         $redis = $this->createMock(Redis::class);
         $redis->expects(self::once())->method('select')->with(self::equalTo(0))->willReturn(true);
         $redis->expects(self::once())->method('auth')->willReturn(true);
-        $redis->expects(self::once())->method('hDel')->with(self::equalTo($list), 'foo')->willReturn(self::equalTo(1));
+        $redis->expects(self::once())->method('hDel')->with(self::equalTo($list), 'foo')->willReturn(1);
 
         $connection = new Connection(new InMemoryConfiguration([
             'host' => 'localhost',

@@ -37,7 +37,7 @@ abstract class AbstractTask implements TaskInterface
     private const MAX_PRIORITY = 1000;
 
     /**
-     * @var array<string, mixed|bool|string|float|int|DateTimeImmutable|DateTimeZone|DateInterval|NotificationTaskBag|null>
+     * @var array<string, bool|string|float|int|DateTimeImmutable|DateTimeZone|DateInterval|NotificationTaskBag|null>
      */
     protected array $options = [];
 

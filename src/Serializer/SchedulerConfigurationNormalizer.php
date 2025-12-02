@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SchedulerBundle\Serializer;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use SchedulerBundle\Exception\BadMethodCallException;
 use SchedulerBundle\Exception\RuntimeException;
 use SchedulerBundle\Pool\Configuration\SchedulerConfiguration;
@@ -45,14 +47,14 @@ final class SchedulerConfigurationNormalizer implements NormalizerInterface, Den
         $dueTasks = $object->getDueTasks();
 
         return [
-            'timezone' => $this->dateTimeZoneNormalizer->normalize(object: $object->getTimezone(), format: $format, context: $context),
-            'synchronizedDate' => $this->dateTimeNormalizer->normalize(object: $object->getSynchronizedDate(), format: $format, context: $context),
+            'timezone' => $this->dateTimeZoneNormalizer->normalize($object->getTimezone(), format: $format, context: $context),
+            'synchronizedDate' => $this->dateTimeNormalizer->normalize($object->getSynchronizedDate(), format: $format, context: $context),
             'dueTasks' => $dueTasks->map(func: function (TaskInterface $task) use ($format, $context): array {
                 if (!$this->taskNormalizer instanceof TaskNormalizer) {
                     throw new RuntimeException('The task normalizer is not an instance of TaskNormalizer.');
                 }
 
-                return $this->taskNormalizer->normalize(object: $task, format: $format, context: $context);
+                return $this->taskNormalizer->normalize($task, format: $format, context: $context);
             }, keepKeys: false),
         ];
     }
@@ -77,8 +79,8 @@ final class SchedulerConfigurationNormalizer implements NormalizerInterface, Den
         return $this->objectNormalizer->denormalize(data: $data, type: $type, format: $format, context: [
             AbstractNormalizer::DEFAULT_CONSTRUCTOR_ARGUMENTS => [
                 SchedulerConfiguration::class => [
-                    'timezone' => $this->dateTimeZoneNormalizer->denormalize(data: $data['timezone'], type: $type, format:  $format, context:  $context),
-                    'synchronizedDate' => $this->dateTimeNormalizer->denormalize(data: $data['synchronizedDate'], type: $type, format:  $format, context:  $context),
+                    'timezone' => $this->dateTimeZoneNormalizer->denormalize(data: $data['timezone'], type: DateTimeZone::class, format:  $format, context:  $context),
+                    'synchronizedDate' => $this->dateTimeNormalizer->denormalize(data: $data['synchronizedDate'], type: DateTimeImmutable::class, format:  $format, context:  $context),
                     'dueTasks' => array_map(callback: fn (array $task): TaskInterface => $this->taskNormalizer->denormalize(data: $task, type: $type, format: $format, context: $context), array: $data['dueTasks']),
                 ],
             ],

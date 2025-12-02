@@ -31,7 +31,7 @@ final class NotificationTaskBagNormalizer implements DenormalizerInterface, Norm
      *
      * @return array<string, mixed>
      */
-    public function normalize($object, ?string $format = null, array $context = []): array
+    public function normalize($data, ?string $format = null, array $context = []): array
     {
         if (!$this->objectNormalizer instanceof NormalizerInterface) {
             throw new BadMethodCallException(sprintf('The "%s()" method cannot be called as injected normalizer does not implements "%s".', __METHOD__, DenormalizerInterface::class));
@@ -39,7 +39,7 @@ final class NotificationTaskBagNormalizer implements DenormalizerInterface, Norm
 
         return [
             'bag' => NotificationTaskBag::class,
-            'body' => $this->objectNormalizer->normalize(object: $object, format: $format, context: [
+            'body' => $this->objectNormalizer->normalize($data, format: $format, context: [
                 AbstractNormalizer::CALLBACKS => [
                     'recipients' => static fn (array $innerObject, NotificationTaskBag $outerObject, string $attributeName, ?string $format = null, array $context = []): array => array_map(callback: static fn (Recipient $recipient): array => [
                         'email' => $recipient->getEmail(),

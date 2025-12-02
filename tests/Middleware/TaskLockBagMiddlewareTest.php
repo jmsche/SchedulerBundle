@@ -15,7 +15,7 @@ use SchedulerBundle\TaskBag\AccessLockBag;
 use SchedulerBundle\Worker\WorkerInterface;
 use Symfony\Component\Lock\Key;
 use Symfony\Component\Lock\LockFactory;
-use Symfony\Component\Lock\LockInterface;
+use Symfony\Component\Lock\SharedLockInterface;
 use Symfony\Component\Lock\Store\InMemoryStore;
 use Throwable;
 
@@ -62,7 +62,7 @@ final class TaskLockBagMiddlewareTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::once())->method('info')->with(self::equalTo('The lock for task "foo" has been released'));
 
-        $lock = $this->createMock(LockInterface::class);
+        $lock = $this->createMock(SharedLockInterface::class);
         $lock->expects(self::never())->method('acquire');
         $lock->expects(self::once())->method('release');
 

@@ -23,7 +23,7 @@ final class AccessLockBagNormalizerTest extends TestCase
 {
     public function testNormalizerCanSupportNormalization(): void
     {
-        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $objectNormalizer = new ObjectNormalizer();
 
         $lockTaskBagNormalizer = new AccessLockBagNormalizer($objectNormalizer);
 
@@ -33,7 +33,7 @@ final class AccessLockBagNormalizerTest extends TestCase
 
     public function testNormalizerCanSupportDenormalization(): void
     {
-        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $objectNormalizer = new ObjectNormalizer();
 
         $lockTaskBagNormalizer = new AccessLockBagNormalizer($objectNormalizer);
 
